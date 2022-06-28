@@ -1,5 +1,7 @@
 package com.l3azh.bonsai.Dto.Request;
 
+import com.l3azh.bonsai.Config.UserDetailImpl;
+import com.l3azh.bonsai.ValidCustomAnotation.ValidRole;
 import lombok.Builder;
 import lombok.Data;
 
@@ -35,6 +37,9 @@ public class CreateAccountRequestDto {
     @NotBlank(message = "Phonenumber is blank")
     private String phonenumber;
 
+    @ValidRole(
+            bonsaiEnumClass = UserDetailImpl.BonsaiAccRole.class,
+            message = "Invalid role !")
     @NotEmpty(message = "Role is empty !")
     @NotBlank(message = "Role is blank")
     private String role;
