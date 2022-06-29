@@ -2,12 +2,14 @@ package com.l3azh.bonsai.Service;
 
 import com.l3azh.bonsai.Dao.ITreeTypeDao;
 import com.l3azh.bonsai.Dto.Base.BaseResponseDto;
+import com.l3azh.bonsai.Dto.EntityDto.TreeTypeDto;
 import com.l3azh.bonsai.Dto.Request.CreateTreeTypeRequestDto;
 import com.l3azh.bonsai.Dto.Request.UpdateTreeTypeRequestDto;
 import com.l3azh.bonsai.Dto.Response.CreateTreeTypeResponseDto;
 import com.l3azh.bonsai.Dto.Response.UpdateTreeTypeResponseDto;
 import com.l3azh.bonsai.Entity.TreeTypeEntity;
 import com.l3azh.bonsai.ExceptionHanlder.Exceptions.NoneTreeTypeFoundException;
+import com.l3azh.bonsai.ExceptionHanlder.Exceptions.NoneTreeTypeFoundWithUUIDException;
 import com.l3azh.bonsai.ExceptionHanlder.Exceptions.TreeTypeWithNameAlreadyExistException;
 import com.l3azh.bonsai.Repository.ITreeTypeRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,11 +55,11 @@ public class TreeTypeService implements ITreeTypeDao {
     @Override
     public BaseResponseDto<UpdateTreeTypeResponseDto> updateTreeType(
             String uuidTreeType, UpdateTreeTypeRequestDto requestDto)
-            throws NoneTreeTypeFoundException, TreeTypeWithNameAlreadyExistException {
+            throws NoneTreeTypeFoundWithUUIDException, TreeTypeWithNameAlreadyExistException {
         Optional<TreeTypeEntity> treeTypeResultObject =
                 treeTypeRepository.findById(UUID.fromString(uuidTreeType));
         if (treeTypeResultObject.isEmpty()) {
-            throw new NoneTreeTypeFoundException("Can not found any Tree Type with this uuid: " + uuidTreeType);
+            throw new NoneTreeTypeFoundWithUUIDException("Can not found any Tree Type with this uuid: " + uuidTreeType);
         }
         TreeTypeEntity treeTypeUpdate = treeTypeResultObject.get();
         Optional<List<TreeTypeEntity>> listTreeTypeResultObject =
@@ -72,6 +76,26 @@ public class TreeTypeService implements ITreeTypeDao {
                 .code(HttpStatus.OK.value())
                 .flag(true)
                 .data(UpdateTreeTypeResponseDto.builder().message("Update tree type successful !").build())
+                .build();
+    }
+
+    @Override
+    public BaseResponseDto<List<TreeTypeDto>> getAllTreeType() throws NoneTreeTypeFoundException {
+        List<TreeTypeEntity> listTreeTypeEntity = treeTypeRepository.findAll();
+        if(listTreeTypeEntity.isEmpty()){
+            throw new NoneTreeTypeFoundException("Can not found any TreeType in database !");
+        }
+        List<TreeTypeDto> listTreeTypeResult = listTreeTypeEntity.stream().map(treeTypeEntity -> {
+            return TreeTypeDto.builder()
+                    .uuidTreeType(treeTypeEntity.getUuidTreeType().toString())
+                    .name(treeTypeEntity.getName())
+                    .description(treeTypeEntity.getDescription())
+                    .build();
+        }).collect(Collectors.toList());
+        return BaseResponseDto.<List<TreeTypeDto>>builder()
+                .code(HttpStatus.OK.value())
+                .flag(true)
+                .data(listTreeTypeResult)
                 .build();
     }
 }

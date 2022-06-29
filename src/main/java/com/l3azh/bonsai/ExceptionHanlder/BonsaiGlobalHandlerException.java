@@ -1,8 +1,7 @@
 package com.l3azh.bonsai.ExceptionHanlder;
 
 import com.l3azh.bonsai.Dto.Base.ErrorResponseDto;
-import com.l3azh.bonsai.ExceptionHanlder.Exceptions.AccountAlreadyExistException;
-import com.l3azh.bonsai.ExceptionHanlder.Exceptions.AccountWithEmailNotFoundException;
+import com.l3azh.bonsai.ExceptionHanlder.Exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 @Slf4j
 public class BonsaiGlobalHandlerException implements
-        IAccountExceptionHandler{
+        IAccountExceptionHandler,
+        ITreeExceptionHandler,
+        ITreeTypeExceptionHandler {
 
     /**
      * Valid field request exception handler
@@ -92,5 +93,67 @@ public class BonsaiGlobalHandlerException implements
                 .flag(false)
                 .errorMessage(e.getMessage())
                 .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Tree Exception
+     */
+    @Override
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(TreeWithNameAlreadyExistException.class)
+    public ResponseEntity<ErrorResponseDto> handleTreeWithNameAlreadyExistException(TreeWithNameAlreadyExistException e) {
+        return new ResponseEntity<>(ErrorResponseDto.builder()
+                .code(HttpStatus.BAD_REQUEST.value())
+                .flag(false)
+                .errorMessage(e.getMessage())
+                .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoneTreeFoundWithUUIDException.class)
+    public ResponseEntity<ErrorResponseDto> handleNoneTreeFoundWithUUIDException(NoneTreeFoundWithUUIDException e) {
+        return new ResponseEntity<>(ErrorResponseDto.builder()
+                .code(HttpStatus.NOT_FOUND.value())
+                .flag(false)
+                .errorMessage(e.getMessage())
+                .build(), HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoneTreeFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleNoneTreeFoundException(NoneTreeFoundException e) {
+        return new ResponseEntity<>(ErrorResponseDto.builder()
+                .code(HttpStatus.NOT_FOUND.value())
+                .flag(false)
+                .errorMessage(e.getMessage())
+                .build(), HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     *  TreeType Exception
+     */
+
+    @Override
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoneTreeTypeFoundWithUUIDException.class)
+    public ResponseEntity<ErrorResponseDto> handleNoneTreeTypeFoundWithUUIDException(NoneTreeTypeFoundWithUUIDException e) {
+        return new ResponseEntity<>(ErrorResponseDto.builder()
+                .code(HttpStatus.NOT_FOUND.value())
+                .flag(false)
+                .errorMessage(e.getMessage())
+                .build(), HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoneTreeTypeFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleNoneTreeTypeFoundException(NoneTreeTypeFoundException e) {
+        return new ResponseEntity<>(ErrorResponseDto.builder()
+                .code(HttpStatus.NOT_FOUND.value())
+                .flag(false)
+                .errorMessage(e.getMessage())
+                .build(), HttpStatus.NOT_FOUND);
     }
 }
