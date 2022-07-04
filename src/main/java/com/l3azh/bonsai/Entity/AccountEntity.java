@@ -1,17 +1,18 @@
 package com.l3azh.bonsai.Entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
+
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "account")
-@Data
-@EqualsAndHashCode(callSuper = true)
-@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
 public class AccountEntity extends BaseEntity {
 
     @Id

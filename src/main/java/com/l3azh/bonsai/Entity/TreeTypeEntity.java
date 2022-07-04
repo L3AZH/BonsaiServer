@@ -1,7 +1,6 @@
 package com.l3azh.bonsai.Entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -12,9 +11,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tree_type")
-@Data
-@EqualsAndHashCode(callSuper = true)
-@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
 public class TreeTypeEntity extends BaseEntity {
 
     @Id

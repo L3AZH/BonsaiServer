@@ -53,7 +53,7 @@ public class AccountService implements IAccountDao {
          * Create new account
          */
         String passwordEncode = applicationContext.getBean(
-                "passwordEncoder",
+                "providePasswordEncoder",
                 BCryptPasswordEncoder.class).encode(requestDto.getPassword());
         AccountEntity newAccount;
         if (avatar != null && avatar.length > 0) {
@@ -63,6 +63,7 @@ public class AccountService implements IAccountDao {
                     .firstName(requestDto.getFirstName())
                     .lastName(requestDto.getLastName())
                     .phoneNumber(requestDto.getPhonenumber())
+                    .role(requestDto.getRole())
                     .avatar(avatar).build();
         } else {
             newAccount = AccountEntity.builder()
@@ -70,7 +71,8 @@ public class AccountService implements IAccountDao {
                     .password(passwordEncode)
                     .firstName(requestDto.getFirstName())
                     .lastName(requestDto.getLastName())
-                    .phoneNumber(requestDto.getPhonenumber()).build();
+                    .phoneNumber(requestDto.getPhonenumber())
+                    .role(requestDto.getRole()).build();
         }
         accountRepository.save(newAccount);
         return BaseResponseDto.<CreateAccountResponseDto>builder()

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,7 +33,7 @@ public class BonsaiGlobalHandlerException implements
             ObjectError error = ex.getBindingResult().getAllErrors().get(0);
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
-            errorMessageResponse = fieldName + " - " + errorMessage;
+            errorMessageResponse = fieldName.toUpperCase() + ": " + errorMessage;
         }
         return new ResponseEntity<>(
                 ErrorResponseDto.builder()
@@ -88,6 +89,17 @@ public class BonsaiGlobalHandlerException implements
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AccountWithEmailNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleAccountWithEmailNotFound(AccountWithEmailNotFoundException e) {
+        return new ResponseEntity<>(ErrorResponseDto.builder()
+                .code(HttpStatus.BAD_REQUEST.value())
+                .flag(false)
+                .errorMessage(e.getMessage())
+                .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleUserNameNotFoundException(UsernameNotFoundException e) {
         return new ResponseEntity<>(ErrorResponseDto.builder()
                 .code(HttpStatus.BAD_REQUEST.value())
                 .flag(false)

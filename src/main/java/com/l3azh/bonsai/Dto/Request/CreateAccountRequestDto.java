@@ -32,9 +32,9 @@ public class CreateAccountRequestDto {
     @NotBlank(message = "Last name is blank")
     private String lastName;
 
-    @Pattern(regexp = "^\\d{10}$", message = "Invalid phonenumber !")
-    @NotEmpty(message = "Phonenumber is empty !")
-    @NotBlank(message = "Phonenumber is blank")
+    @Pattern(regexp = "^\\d{10}$", message = "Invalid Phone Number !")
+    @NotEmpty(message = "Phone Number is empty !")
+    @NotBlank(message = "Phone Number is blank")
     private String phonenumber;
 
     @ValidRole(

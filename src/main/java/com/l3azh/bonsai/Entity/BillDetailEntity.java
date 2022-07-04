@@ -1,7 +1,6 @@
 package com.l3azh.bonsai.Entity;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -11,8 +10,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "bill_detail")
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class BillDetailEntity{
 
     @Embeddable

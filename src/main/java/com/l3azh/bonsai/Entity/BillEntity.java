@@ -1,7 +1,6 @@
 package com.l3azh.bonsai.Entity;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -12,8 +11,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "bill")
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class BillEntity {
 
     @Id
