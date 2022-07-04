@@ -29,6 +29,7 @@ public class TreeController {
         return ResponseEntity.ok(responseDto);
     }
 
+
     @GetMapping(value = "/get-all-tree")
     public ResponseEntity<BaseResponseDto<List<TreeDto>>> getAllTree() throws NoneTreeFoundException {
         BaseResponseDto<List<TreeDto>> responseDto = treeDao.getAllTree();

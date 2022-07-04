@@ -13,12 +13,6 @@ public class ErrorResponseDto {
     private int code;
     private boolean flag;
     private String errorMessage;
-    private String timeStamp;
-
-    @PrePersist
-    public void defaultValue(){
-        if(Objects.isNull(timeStamp)){
-            timeStamp = AppUtils.getCurrentDateString();
-        }
-    }
+    @Builder.Default
+    private String timeStamp = AppUtils.getCurrentDateString();
 }

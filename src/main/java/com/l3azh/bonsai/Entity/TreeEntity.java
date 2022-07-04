@@ -1,7 +1,6 @@
 package com.l3azh.bonsai.Entity;
 
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
