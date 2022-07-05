@@ -1,9 +1,7 @@
 package com.l3azh.bonsai.Entity;
 
 import com.l3azh.bonsai.Util.AppUtils;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
@@ -13,6 +11,8 @@ import java.util.Date;
 import java.util.Objects;
 
 @MappedSuperclass
+@Getter
+@Setter
 public abstract class BaseEntity {
     @Column(name = "CreateDate", columnDefinition = "DATETIME")
     private Date createDate;

@@ -13,5 +13,6 @@ public class InfoAccountResponseDto {
     private String firstName;
     private String lastName;
     private String phonenumber;
+    private String role;
     private String avatar;
 }

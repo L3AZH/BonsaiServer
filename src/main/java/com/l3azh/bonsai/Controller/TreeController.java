@@ -5,7 +5,9 @@ import com.l3azh.bonsai.Dto.Base.BaseResponseDto;
 import com.l3azh.bonsai.Dto.EntityDto.TreeDto;
 import com.l3azh.bonsai.Dto.Request.CreateTreeRequestDto;
 import com.l3azh.bonsai.Dto.Response.CreateTreeResponseDto;
+import com.l3azh.bonsai.Dto.Response.TreeGroupByTreeTypeResponseDto;
 import com.l3azh.bonsai.ExceptionHanlder.Exceptions.NoneTreeFoundException;
+import com.l3azh.bonsai.ExceptionHanlder.Exceptions.NoneTreeTypeFoundException;
 import com.l3azh.bonsai.ExceptionHanlder.Exceptions.TreeTypeWithNameAlreadyExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,14 @@ public class TreeController {
     @GetMapping(value = "/get-all-tree")
     public ResponseEntity<BaseResponseDto<List<TreeDto>>> getAllTree() throws NoneTreeFoundException {
         BaseResponseDto<List<TreeDto>> responseDto = treeDao.getAllTree();
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping(value = "/get-all-tree-group-by-tree-type")
+    public ResponseEntity<BaseResponseDto<List<TreeGroupByTreeTypeResponseDto>>> getListTreeGroupByTreeType()
+            throws NoneTreeTypeFoundException {
+        BaseResponseDto<List<TreeGroupByTreeTypeResponseDto>> responseDto =
+                treeDao.getAllTreeGroupByTreeType();
         return ResponseEntity.ok(responseDto);
     }
 }

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -97,6 +98,7 @@ public class AccountService implements IAccountDao {
                         accountInfo.getFirstName(),
                         accountInfo.getLastName(),
                         accountInfo.getPhoneNumber(),
+                        accountInfo.getRole(),
                         accountInfo.getAvatar() == null ?
                                 "" : AppUtils.convertByteToBase64String(accountInfo.getAvatar())
                 )).build();
@@ -116,6 +118,7 @@ public class AccountService implements IAccountDao {
         accountInfo.setLastName(requestDto.getLastName());
         accountInfo.setPhoneNumber(requestDto.getPhonenumber());
         accountInfo.setAvatar(AppUtils.convertStringBase64ToByteArray(requestDto.getAvatar()));
+        accountInfo.setUpdateDate(new Date());
         accountRepository.save(accountInfo);
 
         return BaseResponseDto.<UpdateAccountResponseDto>builder()

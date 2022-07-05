@@ -3,6 +3,7 @@ package com.l3azh.bonsai.Controller;
 import com.l3azh.bonsai.Config.BonsaiJwtAuthManager;
 import com.l3azh.bonsai.Dao.IAccountDao;
 import com.l3azh.bonsai.Dto.Base.BaseResponseDto;
+import com.l3azh.bonsai.Dto.EntityDto.AccountDto;
 import com.l3azh.bonsai.Dto.Request.CreateAccountRequestDto;
 import com.l3azh.bonsai.Dto.Request.LoginRequestDto;
 import com.l3azh.bonsai.Dto.Response.CreateAccountResponseDto;
@@ -12,16 +13,18 @@ import com.l3azh.bonsai.Util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -40,10 +43,18 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtil.generateJwToken(authentication);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        List<GrantedAuthority> authorityList = (List<GrantedAuthority>) userDetails.getAuthorities();
+        AccountDto accountInfo = AccountDto.builder()
+                .email(userDetails.getUsername())
+                .role(authorityList.get(0).getAuthority()).build();
         return new ResponseEntity<>(BaseResponseDto.<LoginResponseDto>builder()
                 .code(HttpStatus.OK.value())
                 .flag(true)
-                .data(LoginResponseDto.builder().token(jwt).build()).build(), HttpStatus.OK);
+                .data(LoginResponseDto.builder()
+                        .token(jwt)
+                        .accInfo(accountInfo)
+                        .build()).build(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/signup")
