@@ -7,6 +7,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -34,4 +35,11 @@ public class BillEntity {
 
     @OneToMany(mappedBy = "billOfBillDetail")
     private List<BillDetailEntity> listBillDetail;
+
+    @PrePersist
+    public void defaultValue(){
+        if(Objects.isNull(createDate)){
+            createDate = new Date();
+        }
+    }
 }

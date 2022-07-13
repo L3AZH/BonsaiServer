@@ -6,6 +6,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "tree")
@@ -21,7 +22,7 @@ public class TreeEntity extends BaseEntity{
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "UUID_Tree", columnDefinition = "NVARCHAR(50)")
-    private String uuidTree;
+    private UUID uuidTree;
 
     @Column(name = "Name", columnDefinition = "NVARCHAR(50)")
     private String name;
@@ -32,7 +33,7 @@ public class TreeEntity extends BaseEntity{
     @Column(name = "Price", columnDefinition = "DOUBLE")
     private Double price;
 
-    @Column(name = "Picture", columnDefinition = "BLOB")
+    @Column(name = "Picture", columnDefinition = "MEDIUMBLOB")
     private byte[] picture;
 
     @ManyToOne

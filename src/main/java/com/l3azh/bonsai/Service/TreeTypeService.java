@@ -65,8 +65,12 @@ public class TreeTypeService implements ITreeTypeDao {
         Optional<List<TreeTypeEntity>> listTreeTypeResultObject =
                 treeTypeRepository.getListTreeTypeByName(requestDto.getName());
         if (listTreeTypeResultObject.isPresent()) {
-            if (listTreeTypeResultObject.get().size() > 0) {
+            if (listTreeTypeResultObject.get().size() > 1) {
                 throw new TreeTypeWithNameAlreadyExistException("TreeType with this name already exist !");
+            } else if (listTreeTypeResultObject.get().size() == 1) {
+                if (!uuidTreeType.equals(listTreeTypeResultObject.get().get(0).getUuidTreeType().toString())) {
+                    throw new TreeTypeWithNameAlreadyExistException("TreeType with this name already exist !");
+                }
             }
         }
         treeTypeUpdate.setName(requestDto.getName());
@@ -82,7 +86,7 @@ public class TreeTypeService implements ITreeTypeDao {
     @Override
     public BaseResponseDto<List<TreeTypeDto>> getAllTreeType() throws NoneTreeTypeFoundException {
         List<TreeTypeEntity> listTreeTypeEntity = treeTypeRepository.findAll();
-        if(listTreeTypeEntity.isEmpty()){
+        if (listTreeTypeEntity.isEmpty()) {
             throw new NoneTreeTypeFoundException("Can not found any TreeType in database !");
         }
         List<TreeTypeDto> listTreeTypeResult = listTreeTypeEntity.stream().map(treeTypeEntity -> {

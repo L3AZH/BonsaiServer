@@ -34,7 +34,7 @@ public class AccountEntity extends BaseEntity {
     @Column(name = "Role", columnDefinition = "VARCHAR(45)")
     private String role;
 
-    @Column(name = "Avatar", columnDefinition = "BLOB")
+    @Column(name = "Avatar", columnDefinition = "MEDIUMBLOB")
     private byte[] avatar;
 
     @OneToMany(mappedBy = "accountOfBill")

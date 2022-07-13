@@ -19,7 +19,10 @@ public class BillDetailEntity{
 
     @Embeddable
     @Data
-    private static class BillDetailKey implements Serializable {
+    @Builder
+    @Getter
+    @Setter
+    public static class BillDetailKey implements Serializable {
 
         @Type(type = "uuid-char")
         @Column(name = "FK_Tree_UUID_Tree", columnDefinition = "NVARCHAR(50)")
