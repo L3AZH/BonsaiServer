@@ -11,10 +11,6 @@ import javax.validation.constraints.Pattern;
 @Builder
 public class UpdateAccountRequestDto {
 
-    @NotEmpty(message = "Password is empty !")
-    @NotBlank(message = "Password is blank")
-    private String password;
-
     @NotEmpty(message = "First name is empty !")
     @NotBlank(message = "First is blank")
     private String firstName;
