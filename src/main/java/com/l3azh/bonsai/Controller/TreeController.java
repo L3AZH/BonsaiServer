@@ -56,10 +56,20 @@ public class TreeController {
     }
 
     @GetMapping(value = "/get-all-tree-group-by-tree-type")
-    public ResponseEntity<BaseResponseDto<List<TreeGroupByTreeTypeResponseDto>>> getListTreeGroupByTreeType()
+    public ResponseEntity<BaseResponseDto<List<TreeGroupByTreeTypeResponseDto>>> getAllListTreeGroupByTreeType()
             throws NoneTreeTypeFoundException {
         BaseResponseDto<List<TreeGroupByTreeTypeResponseDto>> responseDto =
                 treeDao.getAllTreeGroupByTreeType();
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping(value = "/get-list-tree-group-by-tree-type")
+    public ResponseEntity<BaseResponseDto<TreeGroupByTreeTypeResponseDto>> getListTreeGroupByTreeType(
+            @RequestParam String uuidTreeType
+    )
+            throws NoneTreeTypeFoundException, NoneTreeFoundWithTreeTypeException, NoneTreeTypeFoundWithUUIDException {
+        BaseResponseDto<TreeGroupByTreeTypeResponseDto> responseDto =
+                treeDao.getListTreeGroupByTreeType(uuidTreeType);
         return ResponseEntity.ok(responseDto);
     }
 }

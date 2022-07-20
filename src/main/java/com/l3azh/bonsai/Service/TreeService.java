@@ -84,8 +84,8 @@ public class TreeService implements ITreeDao {
         if (listTreeResultObject.isPresent()) {
             if (listTreeResultObject.get().size() > 1) {
                 throw new TreeTypeWithNameAlreadyExistException("Tree with this name already exist !");
-            } else if(listTreeResultObject.get().size() == 1){
-                if(!uuidTree.equals(listTreeResultObject.get().get(0).getUuidTree().toString())){
+            } else if (listTreeResultObject.get().size() == 1) {
+                if (!uuidTree.equals(listTreeResultObject.get().get(0).getUuidTree().toString())) {
                     throw new TreeTypeWithNameAlreadyExistException("Tree with this name already exist !");
                 }
             }
@@ -133,8 +133,8 @@ public class TreeService implements ITreeDao {
     @Override
     public BaseResponseDto<TreeDto> getTree(String uuidTree) throws NoneTreeFoundWithUUIDException {
         Optional<TreeEntity> treeResultObject = treeRepository.findById(UUID.fromString(uuidTree));
-        if(treeResultObject.isEmpty()){
-            throw new NoneTreeFoundWithUUIDException("Can not found any tree with uuid: "+ uuidTree);
+        if (treeResultObject.isEmpty()) {
+            throw new NoneTreeFoundWithUUIDException("Can not found any tree with uuid: " + uuidTree);
         }
         TreeEntity treeEntity = treeResultObject.get();
         return BaseResponseDto.<TreeDto>builder()
@@ -200,5 +200,45 @@ public class TreeService implements ITreeDao {
                 .code(HttpStatus.OK.value())
                 .flag(true)
                 .data(resultList).build();
+    }
+
+    @Override
+    public BaseResponseDto<TreeGroupByTreeTypeResponseDto> getListTreeGroupByTreeType(String uuidTreeType)
+            throws NoneTreeTypeFoundWithUUIDException, NoneTreeFoundWithTreeTypeException {
+        Optional<TreeTypeEntity> treeTypeResultObject = treeTypeRepository.findById(UUID.fromString(uuidTreeType));
+        if (treeTypeResultObject.isEmpty()) {
+            throw new NoneTreeTypeFoundWithUUIDException("Can not found any tree type with this uuid: " + uuidTreeType);
+        }
+        Optional<List<TreeEntity>> listTreeResultObject = treeRepository.getListTreeByTreeType(uuidTreeType);
+        if (listTreeResultObject.isEmpty()) {
+            throw new NoneTreeFoundWithTreeTypeException("Can not found any tree with this tree type ");
+        } else {
+            if (listTreeResultObject.get().isEmpty()) {
+                throw new NoneTreeFoundWithTreeTypeException("Can not found any tree with this tree type ");
+            }
+        }
+        TreeTypeEntity treeTypeEntity = treeTypeResultObject.get();
+        List<TreeEntity> listTreeEntity = listTreeResultObject.get();
+        TreeTypeDto treeTypeDto = TreeTypeDto.builder()
+                .uuidTreeType(treeTypeEntity.getUuidTreeType().toString())
+                .name(treeTypeEntity.getName())
+                .description(treeTypeEntity.getDescription())
+                .build();
+        List<TreeDto> listTreeDto = listTreeEntity.stream().map(treeEntity -> TreeDto.builder()
+                .uuidTree(treeEntity.getUuidTree().toString())
+                .name(treeEntity.getName())
+                .description(treeEntity.getDescription())
+                .price(treeEntity.getPrice())
+                .picture(AppUtils.convertByteToBase64String(treeEntity.getPicture()))
+                .treeType(treeTypeDto)
+                .build()).collect(Collectors.toList());
+
+        return BaseResponseDto.<TreeGroupByTreeTypeResponseDto>builder()
+                .code(HttpStatus.OK.value())
+                .flag(true)
+                .data(TreeGroupByTreeTypeResponseDto.builder()
+                        .treeTypeDto(treeTypeDto)
+                        .listTree(listTreeDto).build())
+                .build();
     }
 }

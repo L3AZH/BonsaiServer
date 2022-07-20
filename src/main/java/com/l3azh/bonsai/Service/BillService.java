@@ -149,7 +149,7 @@ public class BillService implements IBillDao {
         }
         List<BillDto> listBill = listBillResultObject.stream().map(billEntity -> BillDto.builder()
                 .uuidBill(billEntity.getUuidBill().toString())
-                .createDate(new Date())
+                .createDate(billEntity.getCreateDate())
                 .listBillDetail(billEntity.getListBillDetail().stream().map(billDetailEntity -> BillDetailDto.builder()
                         .treeDto(TreeDto.builder()
                                 .uuidTree(billDetailEntity.getTreeOfBillDetail().getUuidTree().toString())

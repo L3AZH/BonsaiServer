@@ -26,7 +26,7 @@ public class AccountController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("/update-info")
+    @PutMapping("/update-info")
     public ResponseEntity<BaseResponseDto<UpdateAccountResponseDto>> updateInfo(
             @RequestParam String email, @Valid @RequestBody UpdateAccountRequestDto requestDto
     ) throws AccountWithEmailNotFoundException {

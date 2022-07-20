@@ -22,6 +22,9 @@ public interface ITreeDao {
     BaseResponseDto<List<TreeGroupByTreeTypeResponseDto>> getAllTreeGroupByTreeType()
             throws NoneTreeTypeFoundException;
 
+    BaseResponseDto<TreeGroupByTreeTypeResponseDto> getListTreeGroupByTreeType(String uuidTreeType)
+            throws NoneTreeTypeFoundException, NoneTreeTypeFoundWithUUIDException, NoneTreeFoundWithTreeTypeException;
+
     BaseResponseDto<UpdateTreeResponseDto> updateTree(String uuidTree, UpdateTreeRequestDto requestDto)
             throws TreeTypeWithNameAlreadyExistException, NoneTreeTypeFoundWithUUIDException, NoneTreeFoundWithUUIDException;
 }

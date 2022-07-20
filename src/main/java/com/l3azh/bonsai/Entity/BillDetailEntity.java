@@ -19,6 +19,8 @@ public class BillDetailEntity{
 
     @Embeddable
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Builder
     @Getter
     @Setter
