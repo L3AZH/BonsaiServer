@@ -2,6 +2,7 @@ package com.l3azh.bonsai.Controller;
 
 import com.l3azh.bonsai.Dao.IBillDao;
 import com.l3azh.bonsai.Dto.Base.BaseResponseDto;
+import com.l3azh.bonsai.Dto.MailDto;
 import com.l3azh.bonsai.Dto.Request.CreateBillRequestDto;
 import com.l3azh.bonsai.Dto.Response.BillResponseDto;
 import com.l3azh.bonsai.Dto.Response.CreateBillResponseDto;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 @RestController
@@ -27,14 +29,14 @@ public class BillController {
     public ResponseEntity<BaseResponseDto<CreateBillResponseDto>> createBill(
             @RequestParam String email,
             @Valid @RequestBody CreateBillRequestDto requestDto
-    ) throws AccountWithEmailNotFoundException {
+    ) throws AccountWithEmailNotFoundException, MessagingException {
         BaseResponseDto<CreateBillResponseDto> responseDto = billDao.createBill(email, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping(value = "/get-bill-info")
     public ResponseEntity<BaseResponseDto<BillResponseDto>> getBillInfo(
-            @RequestParam  String uuidBill
+            @RequestParam String uuidBill
     ) throws NoneBillFoundWithUUIDException {
         BaseResponseDto<BillResponseDto> responseDto = billDao.getInfoBill(uuidBill);
         return ResponseEntity.ok(responseDto);
