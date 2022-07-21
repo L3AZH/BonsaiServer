@@ -11,5 +11,6 @@ import java.util.List;
 public class BillDto {
     private String uuidBill;
     private Date createDate;
+    private String email;
     private List<BillDetailDto> listBillDetail;
 }

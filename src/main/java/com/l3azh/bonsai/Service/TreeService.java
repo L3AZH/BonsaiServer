@@ -20,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -108,6 +107,33 @@ public class TreeService implements ITreeDao {
         List<TreeEntity> listTreeEntity = treeRepository.findAll();
         if (listTreeEntity.isEmpty()) {
             throw new NoneTreeFoundException("Can not found any tree in database !");
+        }
+        List<TreeDto> listTreeResult = listTreeEntity.stream().map(treeEntity -> {
+            return TreeDto.builder()
+                    .uuidTree(treeEntity.getUuidTree().toString())
+                    .name(treeEntity.getName())
+                    .description(treeEntity.getDescription())
+                    .price(treeEntity.getPrice())
+                    .picture(AppUtils.convertByteToBase64String(treeEntity.getPicture()))
+                    .treeType(TreeTypeDto.builder()
+                            .uuidTreeType(treeEntity.getTheTreeType().getUuidTreeType().toString())
+                            .name(treeEntity.getTheTreeType().getName())
+                            .description(treeEntity.getTheTreeType().getDescription()).build())
+                    .build();
+        }).collect(Collectors.toList());
+
+        return BaseResponseDto.<List<TreeDto>>builder()
+                .code(HttpStatus.OK.value())
+                .flag(true)
+                .data(listTreeResult)
+                .build();
+    }
+
+    @Override
+    public BaseResponseDto<List<TreeDto>> getListTreeGroupByName(String nameTree) throws NoneTreeFoundWithNameException {
+        List<TreeEntity> listTreeEntity = treeRepository.getListTreeContainNameSearch(nameTree);
+        if (listTreeEntity.isEmpty()) {
+            throw new NoneTreeFoundWithNameException("Can not found any tree with this name : " + nameTree);
         }
         List<TreeDto> listTreeResult = listTreeEntity.stream().map(treeEntity -> {
             return TreeDto.builder()

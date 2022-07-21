@@ -154,8 +154,19 @@ public class BonsaiGlobalHandlerException implements
                 .build(), HttpStatus.NOT_FOUND);
     }
 
+    @Override
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoneTreeFoundWithNameException.class)
+    public ResponseEntity<ErrorResponseDto> handleNoneTreeFoundWithNameException(NoneTreeFoundWithNameException e) {
+        return new ResponseEntity<>(ErrorResponseDto.builder()
+                .code(HttpStatus.NOT_FOUND.value())
+                .flag(false)
+                .errorMessage(e.getMessage())
+                .build(), HttpStatus.NOT_FOUND);
+    }
+
     /**
-     *  TreeType Exception
+     * TreeType Exception
      */
 
     @Override

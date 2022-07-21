@@ -47,6 +47,14 @@ public class TreeController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @GetMapping(value = "/get-tree-by-name")
+    public ResponseEntity<BaseResponseDto<List<TreeDto>>> getListTreeByName(
+            @RequestParam String nameTree
+    ) throws NoneTreeFoundWithNameException {
+        BaseResponseDto<List<TreeDto>> responseDto = treeDao.getListTreeGroupByName(nameTree);
+        return ResponseEntity.ok(responseDto);
+    }
+
     @GetMapping(value = "/get-tree")
     public ResponseEntity<BaseResponseDto<TreeDto>> getTreeInfo(
             @RequestParam String uuidTree

@@ -3,6 +3,7 @@ package com.l3azh.bonsai.Repository;
 import com.l3azh.bonsai.Entity.TreeTypeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,5 +16,5 @@ public interface ITreeTypeRepository extends JpaRepository<TreeTypeEntity, UUID>
             nativeQuery = true,
             value = "SELECT * FROM tree_type tt WHERE tt.Name = :nameTreeType"
     )
-    Optional<List<TreeTypeEntity>> getListTreeTypeByName(String nameTreeType);
+    Optional<List<TreeTypeEntity>> getListTreeTypeByName(@Param(value = "nameTreeType") String nameTreeType);
 }
