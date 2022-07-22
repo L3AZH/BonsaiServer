@@ -6,9 +6,11 @@ import com.l3azh.bonsai.Dto.EntityDto.TreeTypeDto;
 import com.l3azh.bonsai.Dto.Request.CreateTreeTypeRequestDto;
 import com.l3azh.bonsai.Dto.Request.UpdateTreeTypeRequestDto;
 import com.l3azh.bonsai.Dto.Response.CreateTreeTypeResponseDto;
+import com.l3azh.bonsai.Dto.Response.DeleteTreeTypeResponseDto;
 import com.l3azh.bonsai.Dto.Response.UpdateTreeTypeResponseDto;
 import com.l3azh.bonsai.ExceptionHanlder.Exceptions.NoneTreeTypeFoundException;
 import com.l3azh.bonsai.ExceptionHanlder.Exceptions.NoneTreeTypeFoundWithUUIDException;
+import com.l3azh.bonsai.ExceptionHanlder.Exceptions.TreeTypeWasUsedBySomeTreeInDBException;
 import com.l3azh.bonsai.ExceptionHanlder.Exceptions.TreeTypeWithNameAlreadyExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -44,5 +46,13 @@ public class TreeTypeController {
     public ResponseEntity<BaseResponseDto<List<TreeTypeDto>>> getAllTreeType() throws NoneTreeTypeFoundException {
         BaseResponseDto<List<TreeTypeDto>> listTreeType = treeTypeDao.getAllTreeType();
         return ResponseEntity.ok(listTreeType);
+    }
+
+    @DeleteMapping(value = "/delete-tree-type")
+    public ResponseEntity<BaseResponseDto<DeleteTreeTypeResponseDto>> deleteTreeType(
+            @RequestParam String uuidTreeType
+    ) throws TreeTypeWasUsedBySomeTreeInDBException, NoneTreeTypeFoundWithUUIDException {
+        BaseResponseDto<DeleteTreeTypeResponseDto> responseDto = treeTypeDao.deleteTreeType(uuidTreeType);
+        return ResponseEntity.ok(responseDto);
     }
 }

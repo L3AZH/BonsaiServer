@@ -17,4 +17,11 @@ public interface IBillRepository extends JpaRepository<BillEntity, UUID> {
             value = "SELECT * FROM bill bi WHERE bi.FK_Account_Email = :email"
     )
     List<BillEntity> findByEmail(@Param(value = "email") String email);
+
+    @Query(
+            nativeQuery = true,
+            value = "SELECT * FROM bill b WHERE b.CreateDate >= NOW() - interval :numberDay day ;"
+    )
+    List<BillEntity> getListBillFromLastInputDay(@Param(value = "numberDay") int numberDay);
+
 }

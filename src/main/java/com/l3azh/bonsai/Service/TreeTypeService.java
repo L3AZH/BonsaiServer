@@ -6,11 +6,15 @@ import com.l3azh.bonsai.Dto.EntityDto.TreeTypeDto;
 import com.l3azh.bonsai.Dto.Request.CreateTreeTypeRequestDto;
 import com.l3azh.bonsai.Dto.Request.UpdateTreeTypeRequestDto;
 import com.l3azh.bonsai.Dto.Response.CreateTreeTypeResponseDto;
+import com.l3azh.bonsai.Dto.Response.DeleteTreeTypeResponseDto;
 import com.l3azh.bonsai.Dto.Response.UpdateTreeTypeResponseDto;
+import com.l3azh.bonsai.Entity.TreeEntity;
 import com.l3azh.bonsai.Entity.TreeTypeEntity;
 import com.l3azh.bonsai.ExceptionHanlder.Exceptions.NoneTreeTypeFoundException;
 import com.l3azh.bonsai.ExceptionHanlder.Exceptions.NoneTreeTypeFoundWithUUIDException;
+import com.l3azh.bonsai.ExceptionHanlder.Exceptions.TreeTypeWasUsedBySomeTreeInDBException;
 import com.l3azh.bonsai.ExceptionHanlder.Exceptions.TreeTypeWithNameAlreadyExistException;
+import com.l3azh.bonsai.Repository.ITreeRepository;
 import com.l3azh.bonsai.Repository.ITreeTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +32,7 @@ import java.util.stream.Collectors;
 public class TreeTypeService implements ITreeTypeDao {
 
     private final ITreeTypeRepository treeTypeRepository;
+    private final ITreeRepository treeRepository;
 
     @Override
     @Transactional
@@ -53,6 +58,7 @@ public class TreeTypeService implements ITreeTypeDao {
     }
 
     @Override
+    @Transactional
     public BaseResponseDto<UpdateTreeTypeResponseDto> updateTreeType(
             String uuidTreeType, UpdateTreeTypeRequestDto requestDto)
             throws NoneTreeTypeFoundWithUUIDException, TreeTypeWithNameAlreadyExistException {
@@ -100,6 +106,29 @@ public class TreeTypeService implements ITreeTypeDao {
                 .code(HttpStatus.OK.value())
                 .flag(true)
                 .data(listTreeTypeResult)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public BaseResponseDto<DeleteTreeTypeResponseDto> deleteTreeType(String uuidTreeType) throws NoneTreeTypeFoundWithUUIDException, TreeTypeWasUsedBySomeTreeInDBException {
+        Optional<TreeTypeEntity> treeTypeResultObject = treeTypeRepository.findById(UUID.fromString(uuidTreeType));
+        if(treeTypeResultObject.isEmpty()){
+            throw new NoneTreeTypeFoundWithUUIDException("Can not found any Tree Type with uuid: "+uuidTreeType);
+        }
+        Optional<List<TreeEntity>> listTreeByTreeTypeResultObject = treeRepository.getListTreeByTreeType(uuidTreeType);
+        if(listTreeByTreeTypeResultObject.isPresent()){
+            if(listTreeByTreeTypeResultObject.get().size() > 0){
+                throw new TreeTypeWasUsedBySomeTreeInDBException("This Tree Type was used by some Tree object in database");
+            }
+        }
+        TreeTypeEntity treeTypeEntity = treeTypeResultObject.get();
+        treeTypeRepository.delete(treeTypeEntity);
+
+        return BaseResponseDto.<DeleteTreeTypeResponseDto>builder()
+                .code(HttpStatus.OK.value())
+                .flag(true)
+                .data(DeleteTreeTypeResponseDto.builder().message("Delete TreeType Success !").build())
                 .build();
     }
 }

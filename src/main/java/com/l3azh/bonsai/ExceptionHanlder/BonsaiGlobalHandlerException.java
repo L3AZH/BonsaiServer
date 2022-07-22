@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class BonsaiGlobalHandlerException implements
         IAccountExceptionHandler,
         ITreeExceptionHandler,
-        ITreeTypeExceptionHandler {
+        ITreeTypeExceptionHandler,
+        IBillExceptionHandler,
+        IStatisticExceptionHandler {
 
     /**
      * Valid field request exception handler
@@ -184,6 +186,47 @@ public class BonsaiGlobalHandlerException implements
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoneTreeTypeFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleNoneTreeTypeFoundException(NoneTreeTypeFoundException e) {
+        return new ResponseEntity<>(ErrorResponseDto.builder()
+                .code(HttpStatus.NOT_FOUND.value())
+                .flag(false)
+                .errorMessage(e.getMessage())
+                .build(), HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Bill Exception
+     */
+
+    @Override
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoneBillFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleNoneBillFoundException(NoneBillFoundException e) {
+        return new ResponseEntity<>(ErrorResponseDto.builder()
+                .code(HttpStatus.NOT_FOUND.value())
+                .flag(false)
+                .errorMessage(e.getMessage())
+                .build(), HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoneBillFoundWithUUIDException.class)
+    public ResponseEntity<ErrorResponseDto> handleNoneBillFoundWithUUIDException(NoneBillFoundWithUUIDException e) {
+        return new ResponseEntity<>(ErrorResponseDto.builder()
+                .code(HttpStatus.NOT_FOUND.value())
+                .flag(false)
+                .errorMessage(e.getMessage())
+                .build(), HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Statistic Exception
+     */
+
+    @Override
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(StatisticResultEmptyException.class)
+    public ResponseEntity<ErrorResponseDto> handleStatisticResultEmptyException(StatisticResultEmptyException e) {
         return new ResponseEntity<>(ErrorResponseDto.builder()
                 .code(HttpStatus.NOT_FOUND.value())
                 .flag(false)

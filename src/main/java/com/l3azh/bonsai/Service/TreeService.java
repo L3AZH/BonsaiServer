@@ -7,11 +7,14 @@ import com.l3azh.bonsai.Dto.EntityDto.TreeTypeDto;
 import com.l3azh.bonsai.Dto.Request.CreateTreeRequestDto;
 import com.l3azh.bonsai.Dto.Request.UpdateTreeRequestDto;
 import com.l3azh.bonsai.Dto.Response.CreateTreeResponseDto;
+import com.l3azh.bonsai.Dto.Response.DeleteTreeResponseDto;
 import com.l3azh.bonsai.Dto.Response.TreeGroupByTreeTypeResponseDto;
 import com.l3azh.bonsai.Dto.Response.UpdateTreeResponseDto;
+import com.l3azh.bonsai.Entity.BillDetailEntity;
 import com.l3azh.bonsai.Entity.TreeEntity;
 import com.l3azh.bonsai.Entity.TreeTypeEntity;
 import com.l3azh.bonsai.ExceptionHanlder.Exceptions.*;
+import com.l3azh.bonsai.Repository.IBillDetailRepository;
 import com.l3azh.bonsai.Repository.ITreeRepository;
 import com.l3azh.bonsai.Repository.ITreeTypeRepository;
 import com.l3azh.bonsai.Util.AppUtils;
@@ -33,6 +36,7 @@ public class TreeService implements ITreeDao {
     private final ITreeRepository treeRepository;
 
     private final ITreeTypeRepository treeTypeRepository;
+    private final IBillDetailRepository billDetailRepository;
 
     @Override
     @Transactional
@@ -265,6 +269,26 @@ public class TreeService implements ITreeDao {
                 .data(TreeGroupByTreeTypeResponseDto.builder()
                         .treeTypeDto(treeTypeDto)
                         .listTree(listTreeDto).build())
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public BaseResponseDto<DeleteTreeResponseDto> deleteTree(String uuidTree) throws NoneTreeFoundWithUUIDException, TreeDeleteExistInBillDetailException {
+        Optional<TreeEntity> treeResultObject = treeRepository.findById(UUID.fromString(uuidTree));
+        if(treeResultObject.isEmpty()){
+            throw new NoneTreeFoundWithUUIDException("Can not found any Tree with uuid: "+ uuidTree);
+        }
+        List<BillDetailEntity> listBillDetailEntity = billDetailRepository.getListBillDetailByTree(uuidTree);
+        if(listBillDetailEntity.size() > 0){
+            throw new TreeDeleteExistInBillDetailException("Tree was exist in Bill Detail database !");
+        }
+        TreeEntity treeEntity = treeResultObject.get();
+        treeRepository.delete(treeEntity);
+        return BaseResponseDto.<DeleteTreeResponseDto>builder()
+                .code(HttpStatus.OK.value())
+                .flag(true)
+                .data(DeleteTreeResponseDto.builder().message("Delete Tree Success !").build())
                 .build();
     }
 }
